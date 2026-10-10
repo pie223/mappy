@@ -1,0 +1,671 @@
+/* ===========================================================
+   Echo Atlas — design tokens
+   bg-deep #0A0E14 · bg-panel #12171F · line rgba(255,255,255,.08)
+   amber #E8A33D (signature/ping) · teal #4FD1C5 (active/listening)
+   text #EDE9E3 · muted #8A94A6
+   display/UI: Space Grotesk · data/labels: IBM Plex Mono
+   =========================================================== */
+
+:root {
+  --bg-deep: #0A0E14;
+  --bg-panel: #FAFAF8;
+  --bg-panel-2: #e2e2e0;
+  /*--line: rgba(255, 255, 255, 0.08);*/
+  --line: #8F9DAA;
+  --amber: #C35E60;
+  --amber-dim: rgba(195, 94, 96, 0.35);
+  --greyish: #8F9DAA;
+  --teal: #4FD1C5;
+  --text: #FAFAF8;
+  --muted: rgba(143, 157, 170, 1);
+  --danger: #E8664F;
+  --radius: 14px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg-deep);
+  color: rgba(143, 157, 170, 1);
+  font-family: var(--font-display);
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg-deep);
+}
+
+.maplibregl-map {
+  background: var(--bg-deep);
+}
+
+.maplibregl-ctrl-attrib {
+  background: rgba(250, 250, 250, 0.7) !important;
+  color: var(--muted) !important;
+  font-family: var(--font-mono);
+  font-size: 10px !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+}
+.maplibregl-ctrl-attrib a { color: rgba(195, 94, 96,1) !important; }
+.maplibregl-ctrl-attrib-button {
+  /* Recolored "i" icon (same SVG MapLibre ships) tinted to match the
+     "mappy" heading color (--muted, #8F9DAA) instead of using an
+     invert() filter, which only ever gets us to black/white. */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd' fill='%238F9DAA'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E") !important;
+  filter: none !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+/* Force the icon-only collapsed state on ALL screen sizes — MapLibre's
+   own stylesheet only does this below a 640px viewport by default, which
+   is why compact:true alone didn't collapse it on desktop. */
+.maplibregl-ctrl-attrib-button {
+  display: block !important;
+  background-color: #FAFAF8;
+}
+.maplibregl-ctrl-attrib:not(.maplibregl-compact-show) .maplibregl-ctrl-attrib-inner {
+  display: none !important;
+}
+
+/* Expanded panel: half the previous width so the credit text wraps
+   into a narrower, taller box instead of a long horizontal strip. */
+.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  max-width: 200px !important;
+  width: 200px !important;
+  padding: 8px 10px !important;
+  line-height: 1.5;
+  white-space: normal !important;
+  box-sizing: border-box !important;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner {
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+/* Lay the bottom-right controls out as a row instead of MapLibre's
+   default column, so attribution sits to the LEFT of the nav control
+   rather than stacked below it. The attribution control is created
+   before the nav control (it's added at map init, NavigationControl
+   is added after), so in DOM/row order it naturally lands first
+   (i.e. leftmost). Bottom-align them so their baselines match. */
+.maplibregl-ctrl-bottom-right {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important;
+}
+
+.maplibregl-ctrl {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+}
+
+/* Small gap between the attribution box and the nav control, and
+   the same bottom offset as the "Place A Sound" FAB so everything
+   sits on one horizontal line. */
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib {
+  margin: 0 8px 24px 0 !important;
+}
+/* Nudge just the collapsed "i" icon up a little higher than its expanded
+   state — transform on the button itself, since margin on the container
+   was getting neutralized by the flex row's align-items: flex-end. */
+.maplibregl-ctrl-attrib:not(.maplibregl-compact-show) .maplibregl-ctrl-attrib-button {
+  transform: translateY(-4px) !important;
+}
+
+/* Wrapper (created in app.js) that holds the zoom control and the
+   geolocate control stacked in one column, positioned the same way
+   the individual group used to be positioned relative to attribution. */
+.ctrl-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0px;
+  margin: 0 20px 14px 0 !important;
+}
+
+@media (max-width: 640px) {
+  .maplibregl-ctrl-attrib.maplibregl-compact-show {
+    max-width: 130px !important;
+    width: 130px !important;
+  }
+  .maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib {
+    margin: 0 6px 18px 0 !important;
+  }
+  .ctrl-stack {
+    margin: 0 14px 12px 0 !important;
+  }
+}
+
+.maplibregl-ctrl-group {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+.maplibregl-ctrl-group button {
+  background: var(--bg-panel) !important;
+}
+.maplibregl-ctrl-group button:hover { background: var(--bg-panel-2) !important; }
+.maplibregl-ctrl-icon { filter: invert(0.55); }
+
+/* ---------- topbar ---------- */
+.topbar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FAFAF8;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 18px 10px 14px;
+  pointer-events: auto;
+}
+.brand-mark {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: #C35E60;
+  color: #FAFAF8;
+  flex: none;
+}
+.brand h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #8F9DAA;
+}
+.tagline {
+  margin: 1px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.topbar-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.feedback-box {
+  background: #FAFAF8;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  pointer-events: auto;
+  font-family: var(--font-mono);
+}
+.feedback-box a {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.feedback-box a:hover {
+  color: var(--amber);
+}
+.feedback-sep {
+  color: var(--line);
+  margin: 0 2px;
+}
+
+.stats {
+  background: #FAFAF8;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  text-align: right;
+  pointer-events: auto;
+  font-family: var(--font-mono);
+}
+.stats span {
+  display: block;
+  font-size: 20px;
+  font-weight: 500;
+  color: #C35E60;
+  line-height: 1.1;
+}
+.stats label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- floating action button ---------- */
+.fab {
+  position: absolute;
+  left: 20px;
+  bottom: 24px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--amber);
+  color: #FAFAF8;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 22px 14px 16px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(232, 163, 61, 0.25), 0 2px 6px rgba(0,0,0,0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.fab:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(232, 163, 61, 0.32); }
+.fab:active { transform: translateY(0); }
+.fab.active {
+  background: var(--greyish);
+  box-shadow: 0 10px 30px rgba(79, 209, 197, 0.3);
+}
+.fab-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #FAFAF8;
+  flex: none;
+}
+
+.hint-banner {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  background: var(--greyish);
+  border: 1px solid black;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hint-banner button {
+  background: none;
+  border: none;
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hidden { display: none !important; }
+
+/* ---------- intro overlay ---------- */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 20, 0.73);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  padding: 32px;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+.intro-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+.intro-content {
+  max-width: 600px;
+  text-align: justify;
+  cursor: default;
+}
+.intro-mark {
+  width: 46px; height: 46px;
+  margin: 0 auto 18px;
+}
+.intro-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  text-align: center;
+}
+.intro-tagline {
+  margin: 0px 0 0px;
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  text-align: center;
+
+}
+.intro-text {
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.3;
+  color: rgba(143, 157, 170, 1);
+  margin: 0 0 26px;
+}
+
+.intro-text2 {
+  text-transform: none;
+  font-size: 18px;
+  font-style: bold;
+  line-height: 1.5;
+  color: white;
+  margin: 0 0 26px;
+  text-align: center;
+}
+
+.intro-cta {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  margin: 0;
+  animation: intro-pulse 2.2s ease-in-out infinite;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+@keyframes intro-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+@media (max-width: 640px) {
+  .intro-title { font-size: 22px; }
+  .intro-text { font-size: 13.5px; }
+  .intro-text2 { font-size: 15.5px; }
+  .intro-cta { font-size: 15.5px; }
+}
+
+/* ---------- pin markers ---------- */
+/* MapLibre's own vendor stylesheet (maplibre-gl.css) sets
+   `will-change: transform` and `transition: opacity .2s` on every
+   .maplibregl-marker — that's not something we ever declared
+   ourselves, it ships with the library. In Firefox, an element that's
+   pinned to its own GPU layer via will-change, while also transitioning
+   a different property (opacity) at the same time its transform is
+   being rewritten every animation frame, can get painted from a stale
+   cached layer instead of its current position — which is exactly the
+   pin-drift bug: MapLibre computes the correct transform, but Firefox
+   renders an old one, off by roughly the marker's own height. We
+   explicitly cancel both here since our stylesheet loads after theirs. */
+.maplibregl-marker {
+  will-change: auto;
+  transition: none;
+}
+.map-interacting .maplibregl-marker {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sound-pin {
+  width: 22px;
+  height: 22px;
+}
+.sound-pin .core {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 12px; height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: 2px solid #1a1200;
+  box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.18);
+}
+.sound-pin .ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 12px; height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--amber);
+  opacity: 0;
+  animation: sonar-ping 2.8s ease-out infinite;
+}
+.sound-pin .ring.delay { animation-delay: 1.4s; }
+@keyframes sonar-ping {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  70%  { transform: scale(3.4); opacity: 0; }
+  100% { transform: scale(3.4); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sound-pin .ring { animation: none; display: none; }
+}
+
+/* placing-mode cursor is now applied directly to the MapLibre canvas via JS */
+
+/* ---------- modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(6, 8, 12, 0.72);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 28px 26px 26px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg-panel-2);
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+.modal h2 {
+  margin: 0 0 18px;
+  font-size: 21px;
+  line-height: 1.25;
+  padding-right: 20px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 14px;
+}
+.field span {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field span em {
+  font-style: normal;
+  opacity: 0.7;
+}
+.field input[type="text"],
+.field textarea {
+  width: 100%;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: black;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+.field input[type="text"]:focus,
+.field textarea:focus,
+.field input[type="file"]:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+.file-field {
+  border: 1.5px dashed var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--bg-panel-2);
+}
+.file-field input[type="file"] {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  width: 100%;
+}
+.file-field input[type="file"]::file-selector-button {
+  background: var(--amber);
+  color: #1a1200;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12.5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.file-hint {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.form-error {
+  background: rgba(232, 102, 79, 0.12);
+  border: 1px solid rgba(232, 102, 79, 0.35);
+  color: #ff9a86;
+  font-size: 12.5px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: var(--amber);
+  color: #1a1200;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.submit-btn:hover { transform: translateY(-1px); }
+.submit-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+/* ---------- player modal ---------- */
+.player-meta {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.player-description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--greyish);
+  margin: 0 0 18px;
+}
+#player-audio {
+  width: 100%;
+  margin-bottom: 16px;
+  accent-color: var(--teal);
+}
+.delete-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(232, 102, 79, 0.4);
+  color: var(--danger);
+  border-radius: 10px;
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.delete-btn:hover { background: rgba(232, 102, 79, 0.1); }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  z-index: 1100;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.toast.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(8px); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 640px) {
+  .topbar { top: 14px; left: 14px; right: 14px; }
+  .brand h1 { font-size: 15px; }
+  .tagline { font-size: 10px; }
+  .stats span { font-size: 17px; }
+  .feedback-box { font-size: 10px; padding: 7px 12px; }
+  .topbar-right { gap: 6px; }
+  .fab { left: 14px; bottom: 18px; padding: 12px 18px 12px 14px; font-size: 13.5px; }
+  .hint-banner { left: 14px; right: 14px; transform: none; bottom: 84px; justify-content: center; text-align: center; }
+  .modal { padding: 22px 18px 20px; }
+}
