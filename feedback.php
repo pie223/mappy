@@ -11,14 +11,45 @@
 <style>
   body.feedback-page {
     height: auto;
-    min-height: 100%;
+    min-height: 90vh;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
   .feedback-page-wrap {
+    flex: 1 0 auto;
+    width: 100%;
     max-width: 640px;
     margin: 0 auto;
-    padding: 56px 24px 80px;
+    padding: 56px 24px 48px;
+    box-sizing: border-box;
   }
+    .feedback-footer {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 24px 32px;
+    box-sizing: border-box;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .feedback-footer p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .feedback-footer a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .feedback-footer a:hover { color: var(--amber); }
   .feedback-back {
     display: inline-block;
     font-family: var(--font-mono);
@@ -78,18 +109,18 @@
     here and we'll review it.
   </p>
 
-    <h2>Source code</h2>
-  <p>
-    Mappy is free and open source. The source code was generated with the help of AI. You can browse the code, report issues or contribute on
-    <a class="inline-link" href="https://github.com/YOUR-USERNAME/YOUR-REPO" target="_blank" rel="noopener noreferrer">GitHub</a>.
-  </p>
-
-
   <h2>Contact</h2>
   <p>
     mymappy@proton.me
   </p>
 </div>
+
+<footer class="feedback-footer">
+<p>
+  &#x1F12F; Mappy is free open source, code created with help of AI &middot;
+  <a href="https://github.com/pie223/mappy/" target="_blank" rel="noopener noreferrer">View the code on GitHub</a>
+</p>
+</footer>
 
 </body>
 </html>
